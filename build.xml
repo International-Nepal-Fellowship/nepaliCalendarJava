@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<project name="Ant-Test" default="main" basedir=".">
+	<property file="build.properties"/>
+	<!-- Sets variables which can later be used. -->
+	<!-- The value of a property is accessed via ${} -->
+	<property name="src.dir" location="src" />
+	
+	<property name="build.dir" location="build" />
+	<property name="test.build.dir" location="testbuild" />
+
+	<!-- Variables used for JUnit testin -->
+	<property name="test.dir" location="test" />
+	<property name="test.report.dir" location="testreport" />
+
+	<tstamp>
+	  <format property="NOW"
+	          pattern="yyyyMMdd_hhmm"/>
+	</tstamp>
+	
+	<!-- Define the classpath which includes the junit.jar and the classes after compiling-->
+	<path id="class.path">
+		<pathelement location="${build.dir}" />
+		<pathelement location="${test.build.dir}" />		
+		<pathelement location="/usr/share/maven-repo/junit/junit/4.x/junit-4.x.jar" />
+
+		
+	</path>
+
+
+	<!-- Deletes the existing build, docs and dist directory-->
+	<target name="clean">
+		<delete dir="${build.dir}/org" />
+		<delete dir="${test.build.dir}" />
+		<delete dir="${test.report.dir}" />
+	</target>
+
+	<!-- Creates the  build, docs and dist directory-->
+	<target name="makedir">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${test.build.dir}" />
+		<mkdir dir="${test.report.dir}" />
+	</target>
+ 
+	<!-- Compiles the java code (including the usage of library for JUnit -->
+	<target name="compile" depends="clean, makedir">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false">
+			<classpath refid="class.path" />		
+		</javac>
+		<javac srcdir="${test.dir}" destdir="${test.build.dir}" includeantruntime="false">
+			<classpath refid="class.path" />
+		</javac>
+	</target>
+
+	<!-- Run the JUnit Tests -->
+	<!-- Output is XML, could also be plain-->
+	<target name="junit" depends="compile">
+		<junit printsummary="on" fork="true" haltonfailure="yes">
+			<classpath refid="class.path" />
+			<formatter type="xml" />
+			<batchtest todir="${test.report.dir}">
+				<fileset dir="${test.dir}">
+					<include name="**/*Test*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<target name="jar" depends="junit">
+		<!-- Build the jar file -->
+		<jar basedir="${build.dir}" excludes="*jar" destfile="${build.dir}/nepaliCalendar.jar"/>
+		<copy tofile="${build.dir}/nepaliCalendar_${NOW}.jar" file="${build.dir}/nepaliCalendar.jar"/>		
+	</target>	
+	
+	<target name="main" depends="compile, jar">
+		<description>Main target</description>
+		<!-- <eclipse.refreshLocal resource="stdScriptlet" depth="infinite"/> -->
+	</target>
+
+</project>

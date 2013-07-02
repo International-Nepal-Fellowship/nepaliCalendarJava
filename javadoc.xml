@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="private" author="true" classpath="/usr/share/maven-repo/junit/junit/4.x/junit-4.x.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.inf.personneldatabase.reports,org.inf.nepalicalendar" source="1.7" sourcepath="src:test" splitindex="true" use="true" version="true"/>
+    </target>
+</project>
